@@ -11,14 +11,14 @@ def create_task():
 
     global task_id
     data = request.get_json()
-    new_task = Task(id=task_id, tittle=data["tittle"], description=data.get("description", "")) 
+    new_task = Task(id=task_id, title=data["title"], description=data.get("description", "")) 
     task_id += 1
     tasks.append(new_task)
 
     for task in tasks:
-        print(task.id, task.tittle, task.description)
+        print(task.id, task.title, task.description)
 
-    return jsonify({"message": "Nova tarefa criada com sucesso"})
+    return jsonify({"message": "Nova tarefa criada com sucesso", "id": new_task.id})
 
 @app.route("/tasks", methods=["GET"])
 def get_tasks():
@@ -28,11 +28,8 @@ def get_tasks():
         task_list.append(task.to_dict())
 
     output = {
-                "tasks":
-                    {
-                    "tittle": task_list,
-                    "total_tasks": len(task_list)
-                    }             
+                "tasks": task_list,
+                "total_tasks": len(task_list)             
             }
     
     return jsonify(output)  
@@ -51,10 +48,10 @@ def update_task(id):
 
     for task in tasks:
         if task.id == id:
-            task.tittle = data.get("tittle", task.tittle)
+            task.title = data.get("title", task.title)
             task.description = data.get("description", task.description)
             task.completed = data.get("completed", task.completed)
-            return jsonify({"message": "Tarefa atualizada com sucesso"})
+            return jsonify({"message": "Tarefa atualizada com sucesso", "id": task.id})
         
     return jsonify({"message": "Não foi possível encontrar a tarefa"}), 404
 
